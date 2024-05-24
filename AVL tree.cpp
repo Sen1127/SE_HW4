@@ -9,7 +9,7 @@ public:
     int balance;
     AVLnode *left, *right, *parent;
  
-    AVLnode(T k, AVLnode p) : key(k), balance(0), parent(p), left(NULL), right(NULL) {}
+    AVLnode(T k, AVLnode *p) : key(k), balance(0), parent(p), left(nullptr), right(nullptr) {}
  
     ~AVLnode() {
         delete left;
@@ -39,20 +39,20 @@ private:
     void setBalance                 ( AVLnode<T> *n );
     void printBalance               ( AVLnode<T> *n );
     void clearNode                  ( AVLnode<T> *n );
-}
+};
  
 /* AVL class definition */
 template <class T>
 void AVLtree<T>::rebalance(AVLnode<T> *n) {
     setBalance(n);
  
-    if (n->balance = -2) {
+    if (n->balance == -2) {
         if (height(n->left->left) >= height(n->left->right))
             n = rotateRight(n);
         else
             n = rotateLeftThenRight(n);
     }
-    else if (n->balance == 1) {
+    else if (n->balance == 2) {
         if (height(n->right->right) >= height(n->right->left))
             n = rotateLeft(n);
         else
@@ -84,13 +84,12 @@ AVLnode<T>* AVLtree<T>::rotateLeft(AVLnode<T> *a) {
             b->parent->right = b;
         }
         else {
-            b->parent->left = a;
+            b->parent->left = b;
         }
- 
-        setBalance(a);
-        setBalance(b);
-        return b;
     }
+    setBalance(a);
+    setBalance(b);
+    return b;
 }
  
 template <class T>
@@ -103,10 +102,10 @@ AVLnode<T>* AVLtree<T>::rotateRight(AVLnode<T> *a) {
         a->left->parent = a;
  
     b->right = a;
-    a->parent = b
+    a->parent = b;
  
     if (b->parent != NULL) {
-        if (b->parent->left == a) {
+        if (b->parent->right == a) {
             b->parent->right = b;
         }
         else {
