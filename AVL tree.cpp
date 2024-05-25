@@ -209,30 +209,46 @@ void AVLtree<T>::deleteKey(const T delKey) {
     while (child != nullptr) {
         parent = n;
         n = child;
+        
         child = delKey >= n->key ? n->right : n->left;
-        if (delKey == n->key)
+        
+        if (delKey == n->key){
             delNode = n;
+            child = delNode->right != nullptr ? n->right : n->left;
+        }
     }
  
     if (delNode != nullptr) {
+        if(delNode == n){
+            clearNode(n);
+            return;
+        }
+
         delNode->key = n->key;
- 
+        
         child = n->left == nullptr ? n->right : n->left;
- 
+
         if (parent->left == n) {
             parent->left = child;
         }
         else {
             parent->right = child;
         }
+        
+        if(child != nullptr)
+            child -> parent = parent;
 
-        child -> parent = parent;
+        clearNode(n);
 
-        delete n;
-
-        rebalance(parent);
-            
+        rebalance(parent);        
     }
+}
+
+template <class T>
+void AVLtree<T>::clearNode( AVLnode<T> *n ){
+    if(n == root)
+        root = nullptr;
+    delete n;
 }
 
 template <class T>
@@ -246,6 +262,7 @@ int main(void)
     AVLtree<int> t;
  
     std::cout << "Inserting integer values 1 to n" << std::endl;
+
     for (int i = 1; i <= 100; ++i)
         t.insert(i);
  
